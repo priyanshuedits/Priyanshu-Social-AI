@@ -7,6 +7,12 @@ export default async function handler(req, res) {
     const { topic = "", platform = "Instagram Reels", style = "Viral" } =
       req.body || {};
 
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        error: "OPENAI_API_KEY is missing in Vercel"
+      });
+    }
+
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
@@ -34,8 +40,8 @@ Keep it engaging and concise.`
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(500).json({
-        error: "OpenAI request failed"
+      return res.status(response.status).json({
+        error: data?.error?.message || "OpenAI API request failed"
       });
     }
 
@@ -45,7 +51,7 @@ Keep it engaging and concise.`
 
   } catch (error) {
     return res.status(500).json({
-      error: "Server error"
+      error: error.message || "Server error"
     });
   }
 }
