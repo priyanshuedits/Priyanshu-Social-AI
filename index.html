@@ -44,8 +44,7 @@ async function generateAI(){
   if(!r.ok)throw new Error(data.error||"AI request failed");
   output.textContent=data.text||"No response received.";status.textContent="✅ Generated successfully";
  }catch(e){
-  output.textContent="❌ AI connection failed. Make sure index.html and api/generate.js are deployed and OPENAI_API_KEY is set in Vercel.";
-  status.textContent="Server connection error";
+  output.textContent="❌ AI error: " + (e.message || "Unknown error");
  }
 }
 function copyResult(){navigator.clipboard?.writeText(document.getElementById("output").textContent)}
