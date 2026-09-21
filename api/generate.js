@@ -28,7 +28,7 @@ Create:
 Keep it engaging and concise.`;
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
       {
         method: "POST",
         headers: {
@@ -68,3 +68,4 @@ Keep it engaging and concise.`;
 }
 
 module.exports = handler;
+"...:generateContent",
