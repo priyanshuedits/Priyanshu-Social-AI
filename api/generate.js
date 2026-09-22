@@ -5,7 +5,6 @@ async function handler(req, res) {
 
   try {
     const body = req.body || {};
-
     const topic = body.topic || "";
     const platform = body.platform || "Instagram Reels";
     const style = body.style || "Viral";
@@ -21,15 +20,12 @@ async function handler(req, res) {
       "Platform: " + platform + "\n" +
       "Topic: " + topic + "\n" +
       "Style: " + style + "\n\n" +
-      "Create:\n" +
-      "1. HOOK\n" +
-      "2. CAPTION\n" +
-      "3. CTA\n" +
-      "4. 12 relevant hashtags\n\n" +
+      "Create useful social media content.\n" +
+      "Include hook, caption, CTA and relevant hashtags.\n" +
       "Keep it engaging and concise.";
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
       {
         method: "POST",
         headers: {
@@ -53,33 +49,28 @@ async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-  return res.status(response.status).json({
-    error:
-      (data &&
-       data.error &&
-       data.error.message) ||
-      "Gemini API request failed"
-  });
-}
+      console.error("GEMINI ERROR:", data);
 
-    const parts =
-      data &&
-      data.candidates &&
-      data.candidates[0] &&
-      data.candidates[0].content &&
-      data.candidates[0].content.parts;
+      return res.status(response.status).json({
+        error:
+          data?.error?.message ||
+          data?.error?.status ||
+          ("Gemini HTTP " + response.status)
+      });
+    }
 
-    const text = parts
-      ? parts.map(function (part) {
-          return part.text || "";
-        }).join("")
-      : "";
+    const text =
+      data?.candidates?.[0]?.content?.parts
+        ?.map(p => p.text || "")
+        .join("") || "";
 
     return res.status(200).json({
       text: text || "No AI output received."
     });
 
   } catch (error) {
+    console.error("SERVER ERROR:", error);
+
     return res.status(500).json({
       error: error.message || "Server error"
     });
