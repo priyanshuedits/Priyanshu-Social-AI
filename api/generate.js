@@ -53,15 +53,14 @@ async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json({
-        error:
-          data &&
-          data.error &&
-          data.error.message
-            ? data.error.message
-            : "Gemini API request failed"
-      });
-    }
+  return res.status(response.status).json({
+    error:
+      (data &&
+       data.error &&
+       data.error.message) ||
+      "Gemini API request failed"
+  });
+}
 
     const parts =
       data &&
