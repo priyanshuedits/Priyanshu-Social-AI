@@ -1090,8 +1090,172 @@ style="display:block;text-align:center;margin-top:15px;padding:13px;border-radiu
 </section>
   
 </main>
+<section class="card" id="authBox">
+
+  <h2>🔐 Priyanshu Social AI</h2>
+
+  <p id="authTitle" style="color:#aaa;margin-bottom:15px">
+    Login to your creator account
+  </p>
+
+  <input
+    id="authName"
+    placeholder="Your name"
+    style="display:none;margin-bottom:10px"
+  >
+
+  <input
+    id="authEmail"
+    type="email"
+    placeholder="Email"
+    style="margin-bottom:10px"
+  >
+
+  <input
+    id="authPassword"
+    type="password"
+    placeholder="Password"
+  >
+
+  <button
+    class="primary"
+    onclick="handleAuth()"
+    id="authButton"
+  >
+    🔐 Login
+  </button>
+
+  <p
+    id="authMessage"
+    class="status"
+  ></p>
+
+  <button
+    class="secondary"
+    style="width:100%;margin-top:10px"
+    onclick="toggleAuthMode()"
+    id="authToggle"
+  >
+    Create new account
+  </button>
+
+</section>
+<script>
+
+let signupMode = false;
+
+function toggleAuthMode(){
+
+  signupMode = !signupMode;
+
+  document.getElementById("authName").style.display =
+    signupMode ? "block" : "none";
+
+  document.getElementById("authTitle").textContent =
+    signupMode
+      ? "Create your creator account"
+      : "Login to your creator account";
+
+  document.getElementById("authButton").textContent =
+    signupMode ? "🚀 Sign Up" : "🔐 Login";
+
+  document.getElementById("authToggle").textContent =
+    signupMode
+      ? "Already have an account? Login"
+      : "Create new account";
+}
 
 
+async function handleAuth(){
+
+  const name =
+    document.getElementById("authName").value.trim();
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+  if(!email || !password){
+
+    message.textContent =
+      "Please enter email and password.";
+
+    return;
+  }
+
+  message.textContent =
+    "⏳ Please wait...";
+
+  try{
+
+    if(signupMode){
+
+      const {data,error} =
+        await supabaseClient.auth.signUp({
+          email:email,
+          password:password,
+          options:{
+            data:{
+              name:name
+            }
+          }
+        });
+
+      if(error) throw error;
+
+      message.textContent =
+        "✅ Account created! Check your email if confirmation is required.";
+
+    }else{
+
+      const {data,error} =
+        await supabaseClient.auth.signInWithPassword({
+          email:email,
+          password:password
+        });
+
+      if(error) throw error;
+
+      message.textContent =
+        "✅ Login successful! Welcome back.";
+
+      document.getElementById("authBox").style.display =
+        "none";
+
+    }
+
+  }catch(error){
+
+    message.textContent =
+      "❌ " + error.message;
+
+  }
+
+}
+
+
+async function checkLogin(){
+
+  const {data} =
+    await supabaseClient.auth.getSession();
+
+  if(data.session){
+
+    document.getElementById("authBox").style.display =
+      "none";
+
+  }
+
+}
+
+checkLogin();
+
+</script>
 <nav>
 
 <span onclick="home()">🏠 Home</span>
