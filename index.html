@@ -1524,6 +1524,18 @@ renderSaved();
 renderSaved();
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = "https://oxqpktdxefpylyrszisp.supabase.co/rest/v1/;
+const SUPABASE_KEY = "sb_publishable_mzY-iSTwLtR3xw4nHOFwyA_uEBCAOtF";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+console.log("Supabase connected");
+</script>
 </body>
   </html>
