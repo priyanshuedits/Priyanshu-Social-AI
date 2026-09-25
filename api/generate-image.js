@@ -15,78 +15,67 @@ async function handler(req, res) {
       });
     }
 
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = process.env.PIXAZO_API_KEY;
+
+    if (!apiKey) {
       return res.status(500).json({
-        error: "GEMINI_API_KEY is missing in Vercel"
+        error: "PIXAZO_API_KEY is missing in Vercel"
       });
     }
 
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent",
+      "https://gateway.pixazo.ai/flux/text-to-image",
       {
         method: "POST",
 
         headers: {
           "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY
+          "Ocp-Apim-Subscription-Key": apiKey
         },
 
         body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: prompt
-                }
-              ]
-            }
-          ],
-
-          generationConfig: {
-            responseModalities: ["IMAGE"]
-          }
+          prompt: prompt
         })
       }
     );
 
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
       return res.status(response.status).json({
         error:
-          data?.error?.message ||
-          "Image generation failed"
+          data?.error ||
+          data?.message ||
+          "Pixazo image generation failed"
       });
     }
 
-    const parts =
-      data?.candidates?.[0]?.content?.parts || [];
+    const imageUrl =
+      data?.output ||
+      data?.image_url ||
+      data?.url ||
+      data?.output?.media_url;
 
-    const imagePart = parts.find(
-      part => part.inlineData
-    );
-
-    if (!imagePart) {
+    if (!imageUrl) {
       return res.status(500).json({
-        error: "No image was returned by Gemini."
+        error: "Pixazo did not return an image URL.",
+        response: data
       });
     }
 
     return res.status(200).json({
-      image: imagePart.inlineData.data,
-      mimeType:
-        imagePart.inlineData.mimeType ||
-        "image/png"
+      image: imageUrl,
+      mimeType: "image/png"
     });
 
   } catch (error) {
+    console.error("PIXAZO IMAGE ERROR:", error);
 
     return res.status(500).json({
       error:
         error.message ||
-        "Image generation server error"
+        "Pixazo image generation server error"
     });
-
   }
 }
 
