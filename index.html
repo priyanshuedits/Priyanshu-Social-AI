@@ -1500,393 +1500,167 @@ document.getElementById("rewriteGoal").value+
 
 async function generateImageFromPrompt() {
 
-  const promptBox = document.getElementById("imageOutput");
-  const prompt = promptBox.textContent.trim();
+  const promptBox =
+    document.getElementById("imageOutput");
 
-  if (!prompt || prompt === "Your image prompt will appear here...") {
-    document.getElementById("imageGenStatus").textContent =
+  const prompt =
+    promptBox.innerText.trim();
+
+  if (
+    !prompt ||
+    prompt.includes(
+      "Your image prompt will appear here"
+    )
+  ) {
+    document.getElementById(
+      "imageGenStatus"
+    ).textContent =
       "⚠️ Pehle image prompt generate karo.";
+
     return;
   }
 
-  const status = document.getElementById("imageGenStatus");
-  const image = document.getElementById("generatedImage");
-  const download = document.getElementById("downloadImage");
+  const status =
+    document.getElementById("imageGenStatus");
 
-  status.textContent = "🎨 AI image generate ho rahi hai...";
+  const image =
+    document.getElementById("generatedImage");
+
+  const download =
+    document.getElementById("downloadImage");
+
+  status.textContent =
+    "🎨 AI image generate ho rahi hai...";
+
   image.style.display = "none";
   download.style.display = "none";
 
   try {
 
-    const response = await fetch("/api/generate-image", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        prompt: prompt
-      })
-    });
+    const response = await fetch(
+      "/api/generate-image",
+      {
+        method: "POST",
 
-    const data = await response.json();
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          prompt: prompt
+        })
+      }
+    );
+
+    const data =
+      await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Image generation failed");
+      throw new Error(
+        data.error ||
+        "Image generation failed"
+      );
     }
 
-    const imageSrc =
-      "data:" +
-      (data.mimeType || "image/png") +
-      ";base64," +
-      data.image;
+    // Pixazo returns IMAGE URL
+    const imageUrl = data.image;
 
-    image.src = imageSrc;
+    if (!imageUrl) {
+      throw new Error(
+        "Image URL nahi mila."
+      );
+    }
+
+    // Show image
+    image.src = imageUrl;
     image.style.display = "block";
 
-    download.href = imageSrc;
-    download.style.display = "block";
+    // Download through our Vercel API
+    download.style.display = "inline-block";
 
-    status.textContent = "✅ Image generated successfully!";
+    download.onclick = async function(e) {
+
+      e.preventDefault();
+
+      status.textContent =
+        "⬇️ Image download ho rahi hai...";
+
+      try {
+
+        const downloadResponse =
+          await fetch(
+            "/api/download-image",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+                url: imageUrl
+              })
+            }
+          );
+
+        if (!downloadResponse.ok) {
+
+          const errorData =
+            await downloadResponse
+              .json()
+              .catch(() => ({}));
+
+          throw new Error(
+            errorData.error ||
+            "Download failed"
+          );
+        }
+
+        const blob =
+          await downloadResponse.blob();
+
+        const blobUrl =
+          URL.createObjectURL(blob);
+
+        const a =
+          document.createElement("a");
+
+        a.href = blobUrl;
+
+        a.download =
+          "priyanshu-ai-image.png";
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        a.remove();
+
+        URL.revokeObjectURL(blobUrl);
+
+        status.textContent =
+          "✅ Image downloaded successfully!";
+
+      } catch (error) {
+
+        status.textContent =
+          "❌ Download failed: " +
+          error.message;
+
+      }
+
+    };
+
+    status.textContent =
+      "✅ Image generated successfully!";
 
   } catch (error) {
 
     status.textContent =
-      "❌ " + (error.message || "Image generation failed");
+      "❌ " +
+      (error.message ||
+      "Image generation failed");
 
   }
-}
-function generateImagePrompt(){
-
-run(
-document.getElementById("imageTopic").value,
-"AI Image Generator",
-"Create a detailed image-generation prompt in "+
-document.getElementById("imageStyle").value+
-" style. Include subject, composition, lighting, camera, mood, background and quality details.",
-"imageStatus",
-"imageOutput"
-);
-
-}
-
-
-function generateViral(){
-
-run(
-document.getElementById("viralText").value,
-"Social Media Analysis",
-"Analyze this content. Give an estimated 0-100 content quality score, then explain hook strength, clarity, retention potential, originality, CTA, weaknesses and 5 specific improvements. Do not claim guaranteed virality.",
-"viralStatus",
-"viralOutput"
-);
-
-}
-
-
-function openTool(id){
-
-const element=document.getElementById(id);
-
-element.classList.remove("hidden");
-
-element.scrollIntoView({
-behavior:"smooth",
-block:"start"
-});
-
-}
-
-
-function home(){
-
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
-
-}
-
-
-function scrollToTools(){
-
-document.querySelector(".tools")
-.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
-}
-
-
-function scrollToSaved(){
-
-document.getElementById("savedOutput")
-.scrollIntoView({
-behavior:"smooth",
-block:"center"
-});
-
-}
-
-
-function copyText(id){
-
-const text=
-document.getElementById(id).textContent;
-
-if(navigator.clipboard){
-
-navigator.clipboard.writeText(text);
-
-}
-
-}
-
-
-function clearBox(outputId,inputId){
-
-if(inputId){
-
-document.getElementById(inputId).value="";
-
-}
-
-document.getElementById(outputId).textContent=
-"Your result will appear here...";
-
-}
-
-
-async function saveBox(id){
-
-const text =
-document.getElementById(id).textContent.trim();
-
-if(
-!text ||
-text.includes("will appear here") ||
-text.includes("generating") ||
-text.includes("Your AI result")
-){
-
-return;
-
-}
-
-const {data:{session}} =
-await supabaseClient.auth.getSession();
-
-if(!session){
-
-alert("Please login first to save content.");
-
-return;
-
-}
-
-const {error} =
-await supabaseClient
-.from("saved_content")
-.insert({
-user_id: session.user.id,
-title: "Saved Content",
-content: text,
-platform: document.getElementById("platform")
-  ? document.getElementById("platform").value
-  : "Social Media"
-});
-
-if(error){
-
-console.error(error);
-
-alert("❌ Could not save: " + error.message);
-
-return;
-
-}
-
-await renderSaved();
-
-alert("✅ Saved to cloud!");
-
-}
-
-
-async function renderSaved(){
-
-const box =
-document.getElementById("savedOutput");
-
-const {data:{session}} =
-await supabaseClient.auth.getSession();
-
-if(!session){
-
-box.innerHTML =
-"🔐 Login to view your saved content.";
-
-return;
-
-}
-
-const {data,error} =
-await supabaseClient
-.from("saved_content")
-.select("*")
-.eq("user_id", session.user.id)
-.order("created_at", {ascending:false});
-
-if(error){
-
-console.error(error);
-
-box.innerHTML =
-"❌ Could not load saved content.";
-
-return;
-
-}
-
-if(!data || !data.length){
-
-box.innerHTML =
-"No saved content yet.";
-
-return;
-
-}
-
-box.innerHTML =
-data.map(
-(item,index)=>`
-
-<div class="savedItem">
-
-<b>
-Saved ${index+1} • ${new Date(item.created_at).toLocaleString()}
-</b>
-
-<br>
-
-${escapeHtml(item.content)}
-
-<br><br>
-
-<button
-class="secondary"
-style="width:100%"
-onclick="deleteSaved('${item.id}')"
->
-🗑 Delete
-</button>
-
-</div>
-
-`
-).join("");
-
-}
-
-
-async function deleteSaved(id){
-
-if(!confirm("Delete this saved content?")) return;
-
-const {error} =
-await supabaseClient
-.from("saved_content")
-.delete()
-.eq("id", id);
-
-if(error){
-
-alert("❌ Delete failed: " + error.message);
-
-return;
-
-}
-
-await renderSaved();
-
-}
-
-
-function escapeHtml(text){
-
-return String(text).replace(
-/[&<>"']/g,
-function(match){
-
-return {
-
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#039;"
-
-}[match];
-
-}
-);
-
-}
-
-
-async function clearSaved(){
-
-if(!confirm("Delete all your saved content?")) return;
-
-const {data:{session}} =
-await supabaseClient.auth.getSession();
-
-if(!session){
-
-return;
-
-}
-
-const {error} =
-await supabaseClient
-.from("saved_content")
-.delete()
-.eq("user_id", session.user.id);
-
-if(error){
-
-alert("❌ Could not clear saved content: " + error.message);
-
-return;
-
-}
-
-await renderSaved();
-
-}
-
-
-supabaseClient.auth.onAuthStateChange(
-function(event, session){
-
-if(session){
-
-document.getElementById("authBox").style.display = "none";
-renderSaved();
-
-}else{
-
-document.getElementById("authBox").style.display = "block";
-renderSaved();
-
-}
-
-}
-);
-
-renderSaved();
-
-</script>
-</body>
-</html>
+  }
