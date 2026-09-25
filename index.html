@@ -948,6 +948,24 @@ id="imageOutput"
 class="output"
 >
 Your image prompt will appear here...
+  <button class="primary" onclick="generateImageFromPrompt()" style="margin-top:10px">
+🎨 Generate Image
+</button>
+
+<div id="imageGenStatus" class="status"></div>
+
+<img
+  id="generatedImage"
+  style="display:none;width:100%;border-radius:16px;margin-top:15px"
+/>
+
+<a
+  id="downloadImage"
+  style="display:none;margin-top:10px;text-align:center"
+  download="priyanshu-ai-image.png"
+>
+⬇️ Download Image
+</a>
 </div>
 
 <div class="row" style="margin-top:10px">
@@ -1478,7 +1496,64 @@ document.getElementById("rewriteGoal").value+
 
 }
 
+async function generateImageFromPrompt() {
 
+  const promptBox = document.getElementById("imageOutput");
+  const prompt = promptBox.innerText.trim();
+
+  if (!prompt || prompt.includes("Your image prompt will appear here")) {
+    document.getElementById("imageGenStatus").textContent =
+      "⚠️ Pehle image prompt generate karo.";
+    return;
+  }
+
+  const status = document.getElementById("imageGenStatus");
+  const image = document.getElementById("generatedImage");
+  const download = document.getElementById("downloadImage");
+
+  status.textContent = "🎨 AI image generate ho rahi hai...";
+  image.style.display = "none";
+  download.style.display = "none";
+
+  try {
+
+    const response = await fetch("/api/generate-image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: prompt
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Image generation failed");
+    }
+
+    const imageSrc =
+      "data:" +
+      (data.mimeType || "image/png") +
+      ";base64," +
+      data.image;
+
+    image.src = imageSrc;
+    image.style.display = "block";
+
+    download.href = imageSrc;
+    download.style.display = "block";
+
+    status.textContent = "✅ Image generated successfully!";
+
+  } catch (error) {
+
+    status.textContent =
+      "❌ " + (error.message || "Image generation failed");
+
+  }
+}
 function generateImagePrompt(){
 
 run(
