@@ -30,6 +30,7 @@ async function handler(req, res) {
 
         headers: {
           "Content-Type": "application/json",
+          "Cache-Control": "no-cache",
           "Ocp-Apim-Subscription-Key": apiKey
         },
 
@@ -39,27 +40,30 @@ async function handler(req, res) {
       }
     );
 
-    const data = await response.json().catch(() => ({}));
+    const data = await response.json().catch(() => null);
 
     if (!response.ok) {
       return res.status(response.status).json({
         error:
-          data?.error ||
           data?.message ||
-          "Pixazo image generation failed"
+          data?.error ||
+          data?.detail ||
+          `Pixazo error: ${response.status}`,
+        details: data
       });
     }
 
+    // Pixazo free Flux endpoint returns the generated image URL
     const imageUrl =
       data?.output ||
+      data?.image ||
       data?.image_url ||
-      data?.url ||
-      data?.output?.media_url;
+      data?.url;
 
     if (!imageUrl) {
       return res.status(500).json({
-        error: "Pixazo did not return an image URL.",
-        response: data
+        error: "Pixazo returned no image URL.",
+        details: data
       });
     }
 
@@ -69,12 +73,12 @@ async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error("PIXAZO IMAGE ERROR:", error);
+    console.error("PIXAZO ERROR:", error);
 
     return res.status(500).json({
       error:
         error.message ||
-        "Pixazo image generation server error"
+        "Pixazo image generation failed"
     });
   }
 }
