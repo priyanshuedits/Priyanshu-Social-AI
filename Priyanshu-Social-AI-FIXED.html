@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#08080c">
+<title>Priyanshu Social AI</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0
+}
+
+body{
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+  background:#08080c;
+  color:#fff;
+  min-height:100vh
+}
+
+.app{
+  max-width:950px;
+  margin:auto;
+  padding-bottom:90px
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  padding:16px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(8,8,12,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid #24242d
+}
+
+.logo{
+  font-size:20px;
+  font-weight:800
+}
+
+.logo span{
+  color:#999
+}
+
+.badge{
+  font-size:10px;
+  color:#aaa;
+  border:1px solid #333;
+  padding:7px 9px;
+  border-radius:20px
+}
+
+main{
+  padding:18px
+}
+
+.hero,
+.card{
+  background:#111117;
+  border:1px solid #292933;
+  border-radius:20px
+}
+
+.hero{
+  padding:22px;
+  margin-bottom:16px;
+  background:linear-gradient(145deg,#17171f,#0e0e13)
+}
+
+.hero h1{
+  font-size:29px;
+  margin-bottom:8px
+}
+
+.hero p{
+  color:#aaa;
+  line-height:1.5
+}
+
+.card{
+  padding:18px;
+  margin-bottom:16px
+}
+
+.card h2{
+  font-size:18px;
+  margin-bottom:12px
+}
+
+label{
+  display:block;
+  font-size:12px;
+  color:#aaa;
+  margin:12px 0 7px
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px;
+  border-radius:12px;
+  border:1px solid #33333e;
+  background:#09090d;
+  color:#fff;
+  font:inherit;
+  outline:none
+}
+
+textarea{
+  min-height:110px;
+  resize:vertical
+}
+
+.row{
+  display:flex;
+  gap:10px
+}
+
+.row>div{
+  flex:1
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:13px 16px;
+  font-weight:700;
+  cursor:pointer
+}
+
+.primary{
+  width:100%;
+  margin-top:14px;
+  background:#fff;
+  color:#08080c
+}
+
+.secondary{
+  background:#22222c;
+  color:#fff;
+  flex:1
+}
+
+.output{
+  margin-top:14px;
+  min-height:120px;
+  padding:15px;
+  border:1px solid #292933;
+  border-radius:14px;
+  background:#09090d;
+  color:#e8e8ee;
+  white-space:pre-wrap;
+  line-height:1.6
+}
+
+.status{
+  text-align:center;
+  color:#999;
+  font-size:12px;
+  margin-top:8px
+}
+
+.tools{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px
+}
+
+.tool{
+  padding:15px;
+  border:1px solid #292933;
+  border-radius:15px;
+  cursor:pointer;
+  background:#101016
+}
+
+.tool b{
+  display:block
+}
+
+.tool small{
+  display:block;
+  color:#999;
+  margin-top:4px
+}
+
+.hidden{
+  display:none
+}
+
+.savedItem{
+  border:1px solid #292933;
+  border-radius:14px;
+  padding:12px;
+  margin-top:10px;
+  white-space:pre-wrap;
+  color:#ddd
+}
+
+.score{
+  font-size:30px;
+  font-weight:800;
+  margin:10px 0
+}
+
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:20;
+  display:flex;
+  justify-content:center;
+  gap:4px;
+  padding:10px;
+  background:rgba(8,8,12,.97);
+  border-top:1px solid #25252d
+}
+
+nav span{
+  font-size:12px;
+  color:#aaa;
+  padding:7px 12px;
+  cursor:pointer
+}
+
+@media(min-width:700px){
+  main{
+    padding:25px
+  }
+
+  .hero h1{
+    font-size:36px
+  }
+
+  .tools{
+    grid-template-columns:repeat(4,1fr)
+  }
+}
+</style>
+</head>
+
+<body>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://oxqpktdxefpylyrszisp.supabase.co";
+const SUPABASE_KEY = "sb_publishable_mzY-iSTwLtR3xw4nHOFwyA_uEBCAOtF";
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+
+<div class="app">
+
+<header>
+  <div class="logo">
+    Priyanshu <span>Social AI</span>
+  </div>
+
+  <div class="badge">
+    AI STUDIO
+  </div>
+</header>
+
+<main>
+
+<section class="hero">
+  <h1>Create content faster. 🚀</h1>
+  <p>
+    AI tools for hooks, captions, hashtags, scripts,
+    ideas, rewriting and creator planning.
+  </p>
+</section>
+
+
+<!-- MAIN AI -->
+
+<section class="card">
+
+<h2>🤖 AI Content Generator</h2>
+
+<label>Topic</label>
+
+<input
+id="topic"
+placeholder="e.g. Tanjiro anime edit"
+>
+
+<div class="row">
+
+<div>
+
+<label>Platform</label>
+
+<select id="platform">
+<option>Instagram Reels</option>
+<option>YouTube Shorts</option>
+<option>Instagram Post</option>
+<option>YouTube</option>
+</select>
+
+</div>
+
+<div>
+
+<label>Style</label>
+
+<select id="style">
+<option>Viral</option>
+<option>Cinematic</option>
+<option>Funny</option>
+<option>Professional</option>
+<option>Emotional</option>
+</select>
+
+</div>
+
+</div>
+
+<button
+class="primary"
+onclick="generateAI()"
+>
+✨ Generate with AI
+</button>
+
+<div id="status" class="status"></div>
+
+<div
+id="output"
+class="output"
+>
+Your AI result will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('output')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('output')"
+>
+💾 Save
+</button>
+
+<button
+class="secondary"
+onclick="clearBox('output','topic')"
+>
+🗑 Clear
+</button>
+
+</div>
+
+</section>
+
+
+<!-- TOOLS -->
+
+<section class="card">
+
+<h2>⚡ Creator Tools</h2>
+
+<div class="tools">
+
+<div
+class="tool"
+onclick="openTool('hook')"
+>
+<b>🔥 Hook AI</b>
+<small>Scroll-stopping openings</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('hash')"
+>
+<b>#️⃣ Hashtag AI</b>
+<small>Relevant hashtag ideas</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('caption')"
+>
+<b>✍️ Caption + CTA</b>
+<small>Captions and CTAs</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('planner')"
+>
+<b>📅 30-Day Planner</b>
+<small>Content calendar</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('script')"
+>
+<b>🎬 Reel Script</b>
+<small>15 / 30 / 60 sec scripts</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('ideas')"
+>
+<b>💡 Content Ideas</b>
+<small>20 content ideas</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('rewrite')"
+>
+<b>✨ Rewrite</b>
+<small>Improve your content</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('image')"
+>
+<b>🖼️ Image Prompt</b>
+<small>AI image prompts</small>
+</div>
+
+<div
+class="tool"
+onclick="openTool('viral')"
+>
+<b>📊 Viral Analysis</b>
+<small>Analyze content</small>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HOOK -->
+
+<section
+class="card hidden"
+id="hook"
+>
+
+<h2>🔥 Hook AI</h2>
+
+<label>Topic</label>
+
+<input
+id="hookTopic"
+placeholder="e.g. anime edit"
+>
+
+<label>Hook Style</label>
+
+<select id="hookStyle">
+<option>Viral</option>
+<option>Curiosity</option>
+<option>Emotional</option>
+<option>Funny</option>
+<option>Cinematic</option>
+</select>
+
+<button
+class="primary"
+onclick="generateHook()"
+>
+🔥 Generate 10 Hooks
+</button>
+
+<div
+id="hookStatus"
+class="status"
+></div>
+
+<div
+id="hookOutput"
+class="output"
+>
+Your hooks will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('hookOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('hookOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- HASHTAG -->
+
+<section
+class="card hidden"
+id="hash"
+>
+
+<h2>#️⃣ Hashtag AI</h2>
+
+<label>Topic / Niche</label>
+
+<input
+id="hashTopic"
+placeholder="e.g. gaming edits"
+>
+
+<label>Platform</label>
+
+<select id="hashPlatform">
+<option>Instagram Reels</option>
+<option>YouTube Shorts</option>
+<option>Instagram</option>
+<option>YouTube</option>
+</select>
+
+<button
+class="primary"
+onclick="generateHash()"
+>
+# Generate Hashtags
+</button>
+
+<div id="hashStatus" class="status"></div>
+
+<div
+id="hashOutput"
+class="output"
+>
+Your hashtags will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('hashOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('hashOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- CAPTION -->
+
+<section
+class="card hidden"
+id="caption"
+>
+
+<h2>✍️ Caption + CTA AI</h2>
+
+<label>Topic</label>
+
+<input
+id="capTopic"
+placeholder="e.g. Tanjiro edit"
+>
+
+<label>Style</label>
+
+<select id="capStyle">
+<option>Viral</option>
+<option>Cinematic</option>
+<option>Funny</option>
+<option>Emotional</option>
+<option>Professional</option>
+</select>
+
+<button
+class="primary"
+onclick="generateCaption()"
+>
+✍️ Generate Caption
+</button>
+
+<div id="capStatus" class="status"></div>
+
+<div
+id="capOutput"
+class="output"
+>
+Your caption and CTA will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('capOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('capOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- PLANNER -->
+
+<section
+class="card hidden"
+id="planner"
+>
+
+<h2>📅 30-Day Content Planner</h2>
+
+<label>Niche / Topic</label>
+
+<input
+id="planTopic"
+placeholder="e.g. anime edits"
+>
+
+<label>Platform</label>
+
+<select id="planPlatform">
+<option>Instagram Reels</option>
+<option>YouTube Shorts</option>
+<option>YouTube</option>
+</select>
+
+<button
+class="primary"
+onclick="generatePlanner()"
+>
+📅 Generate 30 Days
+</button>
+
+<div id="planStatus" class="status"></div>
+
+<div
+id="planOutput"
+class="output"
+>
+Your 30-day plan will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('planOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('planOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SCRIPT -->
+
+<section
+class="card hidden"
+id="script"
+>
+
+<h2>🎬 Reel Script Generator</h2>
+
+<label>Topic</label>
+
+<input
+id="scriptTopic"
+placeholder="e.g. Tanjiro transformation"
+>
+
+<div class="row">
+
+<div>
+
+<label>Platform</label>
+
+<select id="scriptPlatform">
+<option>Instagram Reels</option>
+<option>YouTube Shorts</option>
+</select>
+
+</div>
+
+<div>
+
+<label>Duration</label>
+
+<select id="scriptDuration">
+<option>15 seconds</option>
+<option>30 seconds</option>
+<option>60 seconds</option>
+</select>
+
+</div>
+
+</div>
+
+<button
+class="primary"
+onclick="generateScript()"
+>
+🎬 Generate Script
+</button>
+
+<div id="scriptStatus" class="status"></div>
+
+<div
+id="scriptOutput"
+class="output"
+>
+Your script will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('scriptOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('scriptOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- IDEAS -->
+
+<section
+class="card hidden"
+id="ideas"
+>
+
+<h2>💡 Content Ideas</h2>
+
+<label>Niche</label>
+
+<input
+id="ideasTopic"
+placeholder="e.g. video editing / anime / gaming"
+>
+
+<label>Platform</label>
+
+<select id="ideasPlatform">
+<option>Instagram Reels</option>
+<option>YouTube Shorts</option>
+<option>YouTube</option>
+</select>
+
+<button
+class="primary"
+onclick="generateIdeas()"
+>
+💡 Generate 20 Ideas
+</button>
+
+<div id="ideasStatus" class="status"></div>
+
+<div
+id="ideasOutput"
+class="output"
+>
+20 ideas will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('ideasOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('ideasOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- REWRITE -->
+
+<section
+class="card hidden"
+id="rewrite"
+>
+
+<h2>✨ Rewrite / Improve</h2>
+
+<label>Paste your content</label>
+
+<textarea
+id="rewriteText"
+placeholder="Paste your caption, hook or script here..."
+></textarea>
+
+<label>Goal</label>
+
+<select id="rewriteGoal">
+<option>More engaging</option>
+<option>More professional</option>
+<option>Shorter</option>
+<option>More emotional</option>
+<option>More viral-style</option>
+</select>
+
+<button
+class="primary"
+onclick="generateRewrite()"
+>
+✨ Improve Content
+</button>
+
+<div id="rewriteStatus" class="status"></div>
+
+<div
+id="rewriteOutput"
+class="output"
+>
+Improved content will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('rewriteOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('rewriteOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- IMAGE PROMPT -->
+
+<section
+class="card hidden"
+id="image"
+>
+
+<h2>🖼️ AI Image Prompt Generator</h2>
+
+<label>Scene / Topic</label>
+
+<input
+id="imageTopic"
+placeholder="e.g. cinematic anime warrior in rain"
+>
+
+<label>Style</label>
+
+<select id="imageStyle">
+<option>Cinematic</option>
+<option>Anime</option>
+<option>Realistic</option>
+<option>3D</option>
+<option>Dark</option>
+</select>
+
+<button
+class="primary"
+onclick="generateImagePrompt()"
+>
+🖼️ Generate Prompt
+</button>
+
+<div id="imageStatus" class="status"></div>
+
+<div
+id="imageOutput"
+class="output"
+>
+Your image prompt will appear here...
+</div>
+
+<button class="primary" onclick="generateImageFromPrompt()">
+🎨 Generate Real Image
+</button>
+
+<div id="imageGenStatus" class="status"></div>
+
+<img
+  id="generatedImage"
+  alt="Generated AI image"
+  style="display:none;width:100%;border-radius:16px;margin-top:15px"
+/>
+
+<a
+  id="downloadImage"
+  style="display:none;margin-top:10px;text-align:center"
+  download="priyanshu-ai-image.png"
+>
+⬇️ Download Image
+</a>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('imageOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('imageOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- VIRAL ANALYSIS -->
+
+<section
+class="card hidden"
+id="viral"
+>
+
+<h2>📊 Viral Analysis</h2>
+
+<label>Content to analyze</label>
+
+<textarea
+id="viralText"
+placeholder="Paste your hook, caption or script..."
+></textarea>
+
+<button
+class="primary"
+onclick="generateViral()"
+>
+📊 Analyze Content
+</button>
+
+<div
+id="viralStatus"
+class="status"
+></div>
+
+<div
+id="viralScore"
+class="score"
+></div>
+
+<div
+id="viralOutput"
+class="output"
+>
+Analysis will appear here...
+</div>
+
+<div class="row" style="margin-top:10px">
+
+<button
+class="secondary"
+onclick="copyText('viralOutput')"
+>
+📋 Copy
+</button>
+
+<button
+class="secondary"
+onclick="saveBox('viralOutput')"
+>
+💾 Save
+</button>
+
+</div>
+
+</section>
+
+
+<!-- SAVED -->
+
+<section class="card">
+
+<h2>💾 Saved Content</h2>
+
+<div
+id="savedOutput"
+class="output"
+>
+No saved content yet.
+</div>
+
+<button
+class="secondary"
+style="width:100%;margin-top:10px"
+onclick="clearSaved()"
+>
+🗑 Clear All Saved
+</button>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section class="card">
+
+<h2>🎬 Creator Profile</h2>
+
+<p style="color:#aaa;line-height:1.6">
+Priyanshu — Video Editor<br>
+Reels • Shorts • Anime • Gaming • Cinematic
+</p>
+
+</section>
+<section class="card" id="about">
+
+<h2>ℹ️ About Priyanshu Social AI</h2>
+
+<p style="color:#aaa;line-height:1.7">
+<b>Priyanshu Social AI</b> is an AI-powered creator studio
+designed to help creators create social-media content faster.
+</p>
+
+<br>
+
+<p style="color:#aaa;line-height:1.8">
+🎬 <b>Creator:</b> Priyanshu<br>
+📺 <b>YouTube:</b> @priyanshunot0<br>
+🤖 <b>Tools:</b> Hooks • Captions • Scripts • Hashtags • Content Ideas • AI Prompts<br>
+🚀 <b>Built for:</b> Content Creators & Video Editors
+</p>
+
+<a
+href="https://youtube.com/@priyanshunot0"
+target="_blank"
+style="display:block;text-align:center;margin-top:15px;padding:13px;border-radius:12px;background:#fff;color:#08080c;text-decoration:none;font-weight:700;"
+>
+▶️ Visit My YouTube Channel
+</a>
+
+</section>
+  
+</main>
+<section class="card" id="authBox">
+
+  <h2>🔐 Priyanshu Social AI</h2>
+
+  <p id="authTitle" style="color:#aaa;margin-bottom:15px">
+    Login to your creator account
+  </p>
+
+  <input
+    id="authName"
+    placeholder="Your name"
+    style="display:none;margin-bottom:10px"
+  >
+
+  <input
+    id="authEmail"
+    type="email"
+    placeholder="Email"
+    style="margin-bottom:10px"
+  >
+
+  <input
+    id="authPassword"
+    type="password"
+    placeholder="Password"
+  >
+
+  <button
+    class="primary"
+    onclick="handleAuth()"
+    id="authButton"
+  >
+    🔐 Login
+  </button>
+
+  <p
+    id="authMessage"
+    class="status"
+  ></p>
+
+  <button
+    type="button"
+    class="secondary"
+    style="width:100%;margin-top:10px"
+    onclick="toggleAuthMode(); return false;"
+    id="authToggle"
+  >
+    Create new account
+  </button>
+
+</section>
+<script>
+
+let signupMode = false;
+
+function toggleAuthMode(){
+
+  signupMode = !signupMode;
+
+  document.getElementById("authName").style.display =
+    signupMode ? "block" : "none";
+
+  document.getElementById("authTitle").textContent =
+    signupMode
+      ? "Create your creator account"
+      : "Login to your creator account";
+
+  document.getElementById("authButton").textContent =
+    signupMode ? "🚀 Sign Up" : "🔐 Login";
+
+  document.getElementById("authToggle").textContent =
+    signupMode
+      ? "Already have an account? Login"
+      : "Create new account";
+}
+
+
+async function handleAuth(){
+
+  const name =
+    document.getElementById("authName").value.trim();
+
+  const email =
+    document.getElementById("authEmail").value.trim();
+
+  const password =
+    document.getElementById("authPassword").value;
+
+  const message =
+    document.getElementById("authMessage");
+
+  if(!email || !password){
+
+    message.textContent =
+      "Please enter email and password.";
+
+    return;
+  }
+
+  message.textContent =
+    "⏳ Please wait...";
+
+  try{
+
+    if(signupMode){
+
+      const {data,error} =
+        await supabaseClient.auth.signUp({
+          email:email,
+          password:password,
+          options:{
+            data:{
+              name:name
+            }
+          }
+        });
+
+      if(error) throw error;
+
+      message.textContent =
+        "✅ Account created! Check your email if confirmation is required.";
+
+    }else{
+
+      const {data,error} =
+        await supabaseClient.auth.signInWithPassword({
+          email:email,
+          password:password
+        });
+
+      if(error) throw error;
+
+      message.textContent =
+        "✅ Login successful! Welcome back.";
+
+      document.getElementById("authBox").style.display =
+        "none";
+
+    }
+
+  }catch(error){
+
+    message.textContent =
+      "❌ " + error.message;
+
+  }
+
+}
+
+
+async function checkLogin(){
+
+  const {data} =
+    await supabaseClient.auth.getSession();
+
+  if(data.session){
+
+    document.getElementById("authBox").style.display =
+      "none";
+
+  }
+
+}
+
+checkLogin();
+
+</script>
+<nav>
+
+<span onclick="home()">🏠 Home</span>
+
+<span onclick="scrollToTools()">🤖 AI</span>
+
+<span onclick="openTool('planner')">📅 Planner</span>
+
+<span onclick="scrollToSaved()">💾 Saved</span>
+
+</nav>
+
+</div>
+
+
+<script>
+
+async function callAI(topic,platform,style){
+
+const response=await fetch(
+"/api/generate",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+topic:topic,
+platform:platform,
+style:style
+})
+}
+);
+
+const data=await response.json().catch(()=>({}));
+
+if(!response.ok){
+
+throw new Error(
+data.error || "AI request failed"
+);
+
+}
+
+return data.text || "No response received.";
+
+}
+
+
+async function run(
+topic,
+platform,
+style,
+statusId,
+outputId
+){
+
+const text=String(topic||"").trim();
+
+const output=document.getElementById(outputId);
+
+const status=document.getElementById(statusId);
+
+if(!text){
+
+output.textContent=
+"Please enter a topic/content first.";
+
+return;
+
+}
+
+output.textContent=
+"🤖 AI is generating...";
+
+status.textContent=
+"Connecting to secure AI server...";
+
+try{
+
+output.textContent=
+await callAI(
+text,
+platform,
+style
+);
+
+status.textContent=
+"✅ Generated successfully";
+
+}catch(error){
+
+output.textContent=
+"❌ AI error: "+
+(error.message || "Unknown error");
+
+status.textContent=
+"Server connection error";
+
+}
+
+}
+
+
+function generateAI(){
+
+run(
+document.getElementById("topic").value,
+document.getElementById("platform").value,
+document.getElementById("style").value,
+"status",
+"output"
+);
+
+}
+
+
+function generateHook(){
+
+run(
+document.getElementById("hookTopic").value,
+"Social Media Hook",
+document.getElementById("hookStyle").value+
+" hook. Generate 10 different scroll-stopping hooks.",
+"hookStatus",
+"hookOutput"
+);
+
+}
+
+
+function generateHash(){
+
+run(
+document.getElementById("hashTopic").value,
+document.getElementById("hashPlatform").value,
+"Hashtag Generator. Give 15 relevant hashtags grouped into broad, niche and community hashtags.",
+"hashStatus",
+"hashOutput"
+);
+
+}
+
+
+function generateCaption(){
+
+run(
+document.getElementById("capTopic").value,
+"Instagram Reels",
+"Create a strong caption, CTA and 8 relevant hashtags in "+
+document.getElementById("capStyle").value+
+" style. Clearly separate Caption, CTA and Hashtags.",
+"capStatus",
+"capOutput"
+);
+
+}
+
+
+function generatePlanner(){
+
+run(
+document.getElementById("planTopic").value,
+document.getElementById("planPlatform").value,
+"Create a practical 30-day content calendar. Give Day 1 to Day 30 with content idea, hook angle and format.",
+"planStatus",
+"planOutput"
+);
+
+}
+
+
+function generateScript(){
+
+run(
+document.getElementById("scriptTopic").value,
+document.getElementById("scriptPlatform").value,
+"Create a "+
+document.getElementById("scriptDuration").value+
+" reel script. Include Hook, timestamp/scene, visual, voiceover, on-screen text and CTA.",
+"scriptStatus",
+"scriptOutput"
+);
+
+}
+
+
+function generateIdeas(){
+
+run(
+document.getElementById("ideasTopic").value,
+document.getElementById("ideasPlatform").value,
+"Generate exactly 20 practical content ideas for this niche. Include idea, hook angle and format for every idea.",
+"ideasStatus",
+"ideasOutput"
+);
+
+}
+
+
+function generateRewrite(){
+
+run(
+document.getElementById("rewriteText").value,
+"Social Media",
+"Rewrite and improve this content to be "+
+document.getElementById("rewriteGoal").value+
+". Return the improved version first, followed by 3 short improvement notes.",
+"rewriteStatus",
+"rewriteOutput"
+);
+
+}
+
+async function generateImageFromPrompt() {
+
+  const promptBox =
+    document.getElementById("imageOutput");
+
+  const prompt =
+    promptBox.innerText.trim();
+
+  if (
+    !prompt ||
+    prompt.includes(
+      "Your image prompt will appear here"
+    )
+  ) {
+    document.getElementById(
+      "imageGenStatus"
+    ).textContent =
+      "⚠️ Pehle image prompt generate karo.";
+
+    return;
+  }
+
+  const status =
+    document.getElementById("imageGenStatus");
+
+  const image =
+    document.getElementById("generatedImage");
+
+  const download =
+    document.getElementById("downloadImage");
+
+  status.textContent =
+    "🎨 AI image generate ho rahi hai...";
+
+  image.style.display = "none";
+  download.style.display = "none";
+
+  try {
+
+    const response = await fetch(
+      "/api/generate-image",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          prompt: prompt
+        })
+      }
+    );
+
+    const data =
+      await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error ||
+        "Image generation failed"
+      );
+    }
+
+    // Pixazo returns IMAGE URL
+    const imageUrl = data.image;
+
+    if (!imageUrl) {
+      throw new Error(
+        "Image URL nahi mila."
+      );
+    }
+
+    // Show image
+    image.src = imageUrl;
+    image.style.display = "block";
+
+    // Download through Vercel HTTP endpoint.
+    // This avoids Android/Chrome blob-download Network errors.
+    download.style.display = "inline-block";
+    download.href =
+      "/api/download-image?url=" +
+      encodeURIComponent(imageUrl);
+    download.download =
+      "priyanshu-ai-image.png";
+
+    status.textContent =
+      "✅ Image generated successfully!";
+
+  } catch (error) {
+
+    status.textContent =
+      "❌ " +
+      (error.message ||
+      "Image generation failed");
+
+  }
+  }
+
+function openTool(id){
+  document.querySelectorAll('.card[id]').forEach(el=>{
+    if(el.id !== 'authBox' && el.id !== 'about') el.classList.add('hidden');
+  });
+  const el=document.getElementById(id);
+  if(el){ el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+function home(){
+  document.querySelectorAll('.card[id]').forEach(el=>{
+    if(el.id !== 'authBox' && el.id !== 'about') el.classList.add('hidden');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function scrollToTools(){ const el=document.querySelector('.tools'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+function scrollToSaved(){ const el=document.getElementById('savedOutput'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+
+function copyText(id){
+  const el=document.getElementById(id); if(!el) return;
+  const text=el.innerText || el.textContent || ''; if(!text.trim()) return;
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).catch(()=>fallbackCopy(text));
+  }else fallbackCopy(text);
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea'); ta.value=text; document.body.appendChild(ta); ta.select();
+  try{document.execCommand('copy');}catch(e){} ta.remove();
+}
+
+function saveBox(id){
+  const el=document.getElementById(id); if(!el) return;
+  const text=(el.innerText || el.textContent || '').trim();
+  if(!text || text.includes('will appear here') || text.includes('will be generated here')) return;
+  const saved=JSON.parse(localStorage.getItem('priyanshu_saved')||'[]');
+  saved.unshift({text,time:new Date().toLocaleString()});
+  localStorage.setItem('priyanshu_saved',JSON.stringify(saved.slice(0,50)));
+  renderSaved();
+}
+function escapeHtml(v){ return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function renderSaved(){
+  const box=document.getElementById('savedOutput'); if(!box) return;
+  const saved=JSON.parse(localStorage.getItem('priyanshu_saved')||'[]');
+  if(!saved.length){box.textContent='No saved content yet.';return;}
+  box.innerHTML=saved.map(x=>`<div class="savedItem"><small>${escapeHtml(x.time)}</small><br>${escapeHtml(x.text)}</div>`).join('');
+}
+function clearSaved(){ localStorage.removeItem('priyanshu_saved'); renderSaved(); }
+function clearBox(outputId,inputId){
+  const out=document.getElementById(outputId); if(out) out.textContent='Your AI result will appear here...';
+  if(inputId){const input=document.getElementById(inputId); if(input) input.value='';}
+}
+
+async function generateImagePrompt(){
+  const topic=document.getElementById('imageTopic').value.trim();
+  const style=document.getElementById('imageStyle').value;
+  const status=document.getElementById('imageStatus');
+  const output=document.getElementById('imageOutput');
+  if(!topic){ output.textContent='Please enter a scene/topic first.'; return; }
+  status.textContent='🤖 Generating image prompt...'; output.textContent='';
+  try{
+    const text=await callAI(topic,'AI Image Generation',`Create one detailed production-ready image-generation prompt in ${style} style. Describe subject, composition, environment, lighting, camera, mood, colors, details and quality. Return only the final prompt.`);
+    output.textContent=text; status.textContent='✅ Prompt generated successfully';
+  }catch(e){ output.textContent='❌ '+(e.message||'Prompt generation failed'); status.textContent='Server connection error'; }
+}
+
+function generateViral(){
+  const text=document.getElementById('viralText').value.trim();
+  const status=document.getElementById('viralStatus'); const output=document.getElementById('viralOutput');
+  if(!text){output.textContent='Please enter content to analyze.';return;}
+  run(text,'Social Media','Analyze this content for hook strength, clarity, retention, emotional impact, originality, CTA and improvement suggestions. Start with a VIRAL SCORE from 0 to 100, then give the analysis.','viralStatus','viralOutput');
+}
+
+renderSaved();
+</script>
+</body>
+</html>
